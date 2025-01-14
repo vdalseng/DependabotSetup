@@ -15,7 +15,7 @@ updates:
       prefix-development: "chore" # Will result in commits like "chore: Update dependencies for development"
       include: "scope" # Ensure this is either "scope" or "subject"
 
-    open-pull-requests-limit: 1 # Limit to 1 open PR at a time
+    open-pull-requests-limit: 2 # Limit to 2 open PR at a time
     rebase-strategy: "auto" # Rebase PRs when necessary
     versioning-strategy: "increase" # Increase version numbers according to semver
 
