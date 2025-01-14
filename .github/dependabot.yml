@@ -8,16 +8,16 @@ updates:
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "example-app/" # Location of package manifests
     schedule:
-      interval: "daily" # Frequency of update checks
+      interval: "daily"
 
     commit-message:
       prefix: "fix" # Will result in commits like "fix: Update dependencies"
       prefix-development: "chore" # Will result in commits like "chore: Update dependencies for development"
       include: "scope" # Will result in commits like "fix(scope): Update dependencies"
 
-    open-pull-request-limit: 1 # Limit to 1 open PR at a time
-    rebase-strategy: "auto" # Rebase PRs when necessary
-    versioning-strategy: "increase" # Increase version numbers according to semver
+    open-pull-request-limit: 1
+    rebase-strategy: "auto"
+    versioning-strategy: "increase"
 
     groups: # Group dependencies together for updates
       react-packages: # Name of the group
