@@ -10,7 +10,7 @@
   "dependencies": {
     "@elvia/elvis": "^20.2.3",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.10.6",
+    "@types/node": "^22.10.7",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "cra-template-typescript": "1.2.0",
