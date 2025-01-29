@@ -1,3 +1,4 @@
 {
-    "codeQL.createQuery.qlPackLocation": "c:\\Elvia\\Github\\Core\\Air\\DependabotSetup"
+    "codeQL.createQuery.qlPackLocation": "c:\\Elvia\\Github\\Core\\Air\\DependabotSetup",
+    "codeQL.githubDatabase.download": "never"
 }
