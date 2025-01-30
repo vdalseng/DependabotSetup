@@ -3,10 +3,11 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import '@elvia/elvis/elvis.js';
 import '@elvia/elvis/checkDeprecations.js';
-import App from './App.tsx'
+import { RouterProvider } from 'react-router-dom';
+import { routes } from './routes.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <RouterProvider router={routes} />
   </StrictMode>,
 )

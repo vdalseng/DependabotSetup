@@ -1,19 +1,18 @@
-import JsonTable from './components/JsonTable/JsonTable'
+import { Outlet } from 'react-router-dom'
 import Navbar from './components/Navbar/Navbar'
 import './App.css'
 
-function App() {
 
+function App() {
   return (
     <div>
       <header>
         <Navbar />
       </header>
-      <body>
-        <JsonTable />
-      </body>
+      <main>
+        <Outlet />
+      </main>
     </div>
   )
 }
-
 export default App

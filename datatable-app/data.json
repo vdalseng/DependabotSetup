@@ -14,9 +14,33 @@
         },
         {
             "id": "3",
+            "title": "PS4",
+            "type": "Stationary",
+            "teraflops": "1.84"
+        },
+        {
+            "id": "4",
+            "title": "XBOX One",
+            "type": "Stationary",
+            "teraflops": "1.31"
+        },
+        {
+            "id": "5",
             "title": "Nintendo Switch",
             "type": "Handheld",
             "teraflops": "0.5"
+        },
+        {
+            "id": "6",
+            "title": "Sega Mega Drive",
+            "type": "Stationary",
+            "teraflops": "0.0002"
+        },
+        {
+            "id": "7",
+            "title": "N64",
+            "type": "Stationary",
+            "teraflops": "0.000125"
         }
 
     ]
