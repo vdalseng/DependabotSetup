@@ -1,0 +1,48 @@
+name: Build Project
+
+on: 
+    push:
+        branches: [ "main" ]
+    pull_request:
+        branches: [ "main" ]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        container:
+            image: node:20
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                node-version: 20
+
+            - name: Cache Node.js modules
+              uses: actions/cache@v4
+              with:
+                path: ~/.npm
+                key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+                restore-keys: |
+                  ${{ runner.os }}-node-
+
+            - name: Install dependencies
+              run: npm ci
+              working-directory: datatable-app
+
+            - name: Run lint
+              run: npm run lint
+              working-directory: datatable-app
+
+            - name: Build project
+              run: npm run build
+              working-directory: datatable-app
+
+            - name: Upload build artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                name: dist
+                path: dist/
