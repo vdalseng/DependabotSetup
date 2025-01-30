@@ -1,0 +1,23 @@
+{
+    "Consoles": [
+        {
+            "id": "1",
+            "title": "PS5",
+            "type": "Stationary",
+            "teraflops": "10.28"
+        },
+        {
+            "id": "2",
+            "title": "XBOX Series X",
+            "type": "Stationary",
+            "teraflops": "12"
+        },
+        {
+            "id": "3",
+            "title": "Nintendo Switch",
+            "type": "Handheld",
+            "teraflops": "0.5"
+        }
+
+    ]
+}
