@@ -29,17 +29,17 @@ jobs:
                 restore-keys: |
                   ${{ runner.os }}-node-
 
-            - name: Change directory
-              run: cd datatable-app
-
             - name: Install dependencies
-              run: npm i
+              run: npm ci
+              working-directory: datatable-app
 
             - name: Run lint
               run: npm run lint
+              working-directory: datatable-app
 
             - name: Build project
               run: npm run build
+              working-directory: datatable-app
 
             - name: Upload build artifacts
               uses: actions/upload-artifact@v4
