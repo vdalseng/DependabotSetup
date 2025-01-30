@@ -1,0 +1,11 @@
+.container {
+    display: flex;
+    margin: 5rem auto;
+    padding: 1rem;
+    max-width: 40rem;
+}
+
+.table-title {
+    margin: auto;
+    padding: 0.3rem 1rem;
+}
