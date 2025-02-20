@@ -29,9 +29,11 @@ jobs:
             uses: github/codeql-action/init@v3
             with:
                 languages: ${{ matrix.language }}
+                source-root: .
+                db-location: ${{ env.CODEQL_DB_PATH }}
 
-          - name: Initialize CodeQL database
-            run: codeql database init --language=${{ matrix.language }} --source-root . --begin-tracing ${{ env.CODEQL_DB_PATH }}
+          # - name: Initialize CodeQL database
+          #   run: codeql database init --language=${{ matrix.language }} --source-root . --begin-tracing ${{ env.CODEQL_DB_PATH }}
 
           - name: Build app with build command Args from caller
             run: ${{ env.BUILD_ARGS}}
