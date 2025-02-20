@@ -31,7 +31,7 @@ jobs:
                 languages: ${{ matrix.language }}
 
           - name: Initialize CodeQL database
-            run: codeql database init --language ${{ matrix.language }} --source-root . --begin-tracing ${{ env.CODEQL_DB_PATH }}
+            run: codeql database init --language=${{ matrix.language }} --source-root . --begin-tracing ${{ env.CODEQL_DB_PATH }}
 
           - name: Build app with build command Args from caller
             run: ${{ env.BUILD_ARGS}}
