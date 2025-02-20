@@ -1,0 +1,46 @@
+name: Centralized Security Library Workflow
+
+on:
+    push:
+      branches: [ "main" ]
+    pull_request:
+      branches: [ "main" ]
+  
+jobs:
+    codeql:
+        runs-on: ubuntu-latest
+
+        strategy:
+            fail-fast: false
+            matrix:
+                language: [ 'javascript-typescript' ]
+
+        env:
+            CODEQL_DB_PATH: /codeql-dbs/${{ github.repository }}
+            SARIF_OUTPUT_PATH: /temp/${{ github.repository }}-${{ matrix.language }}.sarif
+            BUILD_ARGS: npm run build
+            TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Set up CodeQL
+            uses: github/codeql-action/init@v3
+            with:
+                languages: ${{ matrix.language }}
+
+          - name: Initialize CodeQL database
+            run: codeql database init --language ${{ matrix.language }} --source-root . --begin-tracing ${{ env.CODEQL_DB_PATH }}
+
+          - name: Build app with build command Args from caller
+            run: $BUILD_ARGS
+
+          - name: Finalize CodeQL database
+            run: codeql database finalize ${{ env.CODEQL_DB_PATH }}
+
+          - name: Analyze CodeQL database
+            run: codeql database analyze ${{ env.CODEQL_DB_PATH }} ${{ matrix.language }}-code-scanning.qls --sarif-category=${{ matrix.language}} --format=sarif-latest --output=$${{ env.SARIF_OUTPUT_PATH }}
+
+          - name: Upload CodeQL results
+            run: echo "${{ env.TOKEN }}" | codeql github upload-results --repository=${{ github.repository }} --ref=${{ github.ref }} --commit=${{ github.sha }} --sarif=${{ env.SARIF_OUTPUT_PATH }} --github-auth-stdin
