@@ -37,25 +37,13 @@ jobs:
                 source-root: .
                 db-location: ${{ env.CODEQL_DB_PATH }}
 
-          # - name: Initialize CodeQL database
-          #   run: codeql database init --language=${{ matrix.language }} --source-root . --begin-tracing ${{ env.CODEQL_DB_PATH }}
-
           - name: Build app with build command
             run: |
               cd ./datatable-app/
               npm install
               npm run build
 
-          # - name: Finalize CodeQL database
-          #   run: codeql database finalize ${{ env.CODEQL_DB_PATH }}
-
           - name: Analyze CodeQL database
             uses: github/codeql-action/analyze@v3
             with:
                 output: ${{ env.SARIF_OUTPUT_PATH }}
-                
-
-          # run: codeql database analyze ${{ env.CODEQL_DB_PATH }} ${{ matrix.language }}-code-scanning.qls --sarif-category=${{ matrix.language}} --format=sarif-latest --output=$${{ env.SARIF_OUTPUT_PATH }}
-
-          # - name: Upload CodeQL results
-          #   run: echo "${{ env.TOKEN }}" | codeql github upload-results --repository=${{ github.repository }} --ref=${{ github.ref }} --commit=${{ github.sha }} --sarif=${{ env.SARIF_OUTPUT_PATH }} --github-auth-stdin
