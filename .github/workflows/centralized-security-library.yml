@@ -46,11 +46,16 @@ jobs:
               npm install
               npm run build
 
-          - name: Finalize CodeQL database
-            run: codeql database finalize ${{ env.CODEQL_DB_PATH }}
+          # - name: Finalize CodeQL database
+          #   run: codeql database finalize ${{ env.CODEQL_DB_PATH }}
 
           - name: Analyze CodeQL database
-            run: codeql database analyze ${{ env.CODEQL_DB_PATH }} ${{ matrix.language }}-code-scanning.qls --sarif-category=${{ matrix.language}} --format=sarif-latest --output=$${{ env.SARIF_OUTPUT_PATH }}
+            uses: github/codeql-action/analyze@v3
+            with:
+                output: ${{ env.SARIF_OUTPUT_PATH }}
+                
 
-          - name: Upload CodeQL results
-            run: echo "${{ env.TOKEN }}" | codeql github upload-results --repository=${{ github.repository }} --ref=${{ github.ref }} --commit=${{ github.sha }} --sarif=${{ env.SARIF_OUTPUT_PATH }} --github-auth-stdin
+          # run: codeql database analyze ${{ env.CODEQL_DB_PATH }} ${{ matrix.language }}-code-scanning.qls --sarif-category=${{ matrix.language}} --format=sarif-latest --output=$${{ env.SARIF_OUTPUT_PATH }}
+
+          # - name: Upload CodeQL results
+          #   run: echo "${{ env.TOKEN }}" | codeql github upload-results --repository=${{ github.repository }} --ref=${{ github.ref }} --commit=${{ github.sha }} --sarif=${{ env.SARIF_OUTPUT_PATH }} --github-auth-stdin
