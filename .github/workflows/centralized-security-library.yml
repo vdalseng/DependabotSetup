@@ -20,7 +20,7 @@ jobs:
 
         env:
             CODEQL_DB_PATH: ${{ github.workspace }}/codeql-dbs/${{ github.repository }}
-            SARIF_OUTPUT_PATH: /temp/${{ github.repository }}-${{ matrix.language }}.sarif
+            SARIF_OUTPUT_PATH: /${{ github.workspace }}/${{ github.repository }}-${{ matrix.language }}.sarif
             TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
         steps:
