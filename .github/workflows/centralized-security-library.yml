@@ -1,48 +1,51 @@
 name: Centralized Security Library Workflow
 
 on:
-    push:
-      branches: [ "main" ]
-    pull_request:
-      branches: [ "main" ]
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 permissions:
-    security-events: write
+  security-events: write
+  packages: read
+  actions: read
+  contents: read
 
 jobs:
-    codeql:
-        runs-on: ubuntu-latest
+  codeql:
+    runs-on: ubuntu-latest
 
-        strategy:
-            fail-fast: false
-            matrix:
-                language: [ 'javascript-typescript' ]
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["javascript-typescript"]
 
-        env:
-            CODEQL_DB_PATH: ${{ github.workspace }}/codeql-dbs/${{ github.repository }}
-            SARIF_OUTPUT_PATH: /${{ github.workspace }}/${{ github.repository }}-${{ matrix.language }}.sarif
-            TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
-        steps:
-          - name: Checkout code
-            uses: actions/checkout@v4
+    env:
+      CODEQL_DB_PATH: ${{ github.workspace }}/codeql-dbs/${{ github.repository }}
+      SARIF_OUTPUT_PATH: /${{ github.workspace }}/${{ github.repository }}-${{ matrix.language }}.sarif
+      TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          - name: Create CodeQL database directory
-            run: mkdir -p ${{ env.CODEQL_DB_PATH }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-          - name: Set up CodeQL
-            uses: github/codeql-action/init@v3
-            with:
-                languages: ${{ matrix.language }}
-                source-root: .
-                db-location: ${{ env.CODEQL_DB_PATH }}
+      - name: Create CodeQL database directory
+        run: mkdir -p ${{ env.CODEQL_DB_PATH }}
 
-          - name: Build apps
-            run: |
-              find . -name 'package.json' -not -path '*/node_modules/*' -execdir npm install \;
-              find . -name 'package.json' -not -path '*/node_modules/*' -execdir npm run build \;
+      - name: Set up CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          source-root: .
+          db-location: ${{ env.CODEQL_DB_PATH }}
 
-          - name: Analyze CodeQL database
-            uses: github/codeql-action/analyze@v3
-            with:
-                output: ${{ env.SARIF_OUTPUT_PATH }}
+      - name: Build apps
+        run: |
+          find . -name 'package.json' -not -path '*/node_modules/*' -execdir npm install \;
+          find . -name 'package.json' -not -path '*/node_modules/*' -execdir npm run build \;
+
+      - name: Analyze CodeQL database
+        uses: github/codeql-action/analyze@v3
+        with:
+          output: ${{ env.SARIF_OUTPUT_PATH }}
