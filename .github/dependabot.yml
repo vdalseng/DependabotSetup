@@ -6,7 +6,7 @@
 version: 2
 updates:
   - package-ecosystem: "npm" # See documentation for possible values
-    directory: "example-app/" # Ensure this path is correct
+    directory: "datatable-app/" # Ensure this path is correct
     schedule:
       interval: "daily" # Frequency of update checks
 
@@ -29,4 +29,3 @@ updates:
       other-dependencies: 
         patterns:
           - "web-vitals"
-
