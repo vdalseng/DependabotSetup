@@ -34,8 +34,9 @@ jobs:
           PR_NUMBER=$(echo $PR_URL | awk -F'/' '{print $NF}')
           WORKFLOW_RUNS=$(gh api repos/${{ github.repository }}/actions/runs --paginate -q ".workflow_runs[] | select(.pull_requests[].number == $PR_NUMBER) | .conclusion")
           for STATUS in $WORKFLOW_RUNS; do
-            if [[ "$STATUS" != "success" ]]; then
+            if [[ "$STATUS" != "success" || "$STATUS" != "skipped" ]]; then
               echo "One or more workflows have not completed successfully."
+              echo "Exiting."
               exit 1
             fi
           done
@@ -49,7 +50,7 @@ jobs:
           echo "Approvals: ${{ steps.check-approvals.outputs.approvals }}"
       
       - name: Enable auto-merge for Dependabot PRs
-        if: ${{ steps.dependabot-metadata.outputs.update-type != 'version-update:semver-major' && steps.check-approvals.outputs.approvals > 0 }}
+        if: ${{ steps.check-approvals.outputs.approvals > 0 }}
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
