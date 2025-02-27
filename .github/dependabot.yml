@@ -23,9 +23,41 @@ updates:
       react-packages: # Name of the group
         patterns: # Match dependencies that contain these strings
           - "react" # Will match "react" and "react-dom" etc.
+          - "@testing-library/react"
+          - "@vitejs/plugin-react"
+          - "@types/react"
         update-types: # Types of updates to consider for dependencies in this group
           - "patch"
           - "minor"
+
+      elvia-packages:
+        patterns:
+          - "@elvia/elvis"
+        update-types:
+          - "patch"
+          - "minor"
+
+      eslint-packages:
+        patterns:
+          - "eslint"
+          - "@eslint/js"
+        update-types:
+          - "patch"
+          - "minor"
+
+      vite-packages:
+        patterns:
+          - "vite"
+          - "vitest"
+          - "@vitejs"
+        update-types:
+          - "patch"
+          - "minor"
+
       other-dependencies: 
         patterns:
-          - "web-vitals"
+          - "@testing-library/"
+          - "autoprefixer"
+          - "jsdom"
+          - "globals"
+          - "typescript"
