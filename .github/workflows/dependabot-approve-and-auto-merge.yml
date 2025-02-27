@@ -1,7 +1,5 @@
 name: Dependabot Pull Request Approve and Merge
 on:
-  pull_request_target:
-    types: [opened, synchronize]
   pull_request_review:
     types: [submitted]
   workflow_run:
@@ -12,7 +10,7 @@ on:
 permissions:
   pull-requests: write
   contents: write
-  
+
 jobs:
   dependabot:
     runs-on: ubuntu-latest
