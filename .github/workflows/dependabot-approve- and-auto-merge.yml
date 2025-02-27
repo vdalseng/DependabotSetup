@@ -1,0 +1,46 @@
+name: Dependabot Pull Request Approve and Merge
+on: pull_request_target
+permissions:
+  pull-requests: write
+  contents: write
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Dependabot metadata
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@v1.1.1
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      
+      - name: Check for other approvals
+        id: check-approvals
+        run: |
+          APPROVALS=$(gh pr reviews $PR_URL --json author,state --jq '.[] | select(.state == "APPROVED") | .author.login' | grep -v dependabot[bot] | wc -l)
+          echo "approvals=$APPROVALS" >> $GITHUB_ENV
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check status of all workflows
+        id: check-workflows
+        run: |
+          PR_NUMBER=$(echo $PR_URL | awk -F'/' '{print $NF}')
+          WORKFLOW_RUNS=$(gh api repos/${{ github.repository }}/actions/runs --paginate -q ".workflow_runs[] | select(.pull_requests[].number == $PR_NUMBER) | .conclusion")
+          for STATUS in $WORKFLOW_RUNS; do
+            if [[ "$STATUS" != "success" ]]; then
+              echo "One or more workflows have not completed successfully."
+              exit 1
+            fi
+          done
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Enable auto-merge for Dependabot PRs
+        if: ${{ steps.dependabot-metadata.outputs.update-type }} != 'version-update:semver-major' && env.approvals > 0
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
