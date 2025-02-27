@@ -4,9 +4,15 @@ on:
     types: [opened, synchronize]
   pull_request_review:
     types: [submitted]
+  workflow_run:
+    workflows: ["*"]
+    types:
+      - completed
+
 permissions:
   pull-requests: write
   contents: write
+  
 jobs:
   dependabot:
     runs-on: ubuntu-latest
