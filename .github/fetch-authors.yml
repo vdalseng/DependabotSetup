@@ -1,0 +1,31 @@
+name: Fetch Contributors for Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Fetch authors
+        id: fetch-authors
+        run: |
+          AUTHORS=$(git log --format='%aN' | sort -u)
+          echo "authors=$AUTHORS" >> $GITHUB_ENV
+
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            ## Changelog
+            ### Authors
+            ${{ env.authors }}
