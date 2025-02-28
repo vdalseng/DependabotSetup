@@ -32,7 +32,9 @@ jobs:
         run: |
           PR_NUMBER=$(echo $PR_URL | awk -F'/' '{print $NF}')
           APPROVALS=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews --jq '.[] | select(.state == "APPROVED") | .user.login' | grep -v dependabot[bot] | wc -l)
-          echo "approvals=$APPROVALS" >> $GITHUB_OUTPUT
+          DISMISSALS=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews --jq '.[] | select(.state == "DISMISSED") | .user.login' | grep -v dependabot[bot] | wc -l)
+          TOTAL_APPROVALS=$((APPROVALS - DISMISSALS))
+          echo "total_approvals=$TOTAL_APPROVALS" >> $GITHUB_OUTPUT
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -56,10 +58,10 @@ jobs:
       - name: Debug outputs
         run: |
           echo "Update type: ${{ steps.dependabot-metadata.outputs.update-type }}"
-          echo "Approvals: ${{ steps.check-approvals.outputs.approvals }}"
+          echo "Total Approvals: ${{ steps.check-approvals.outputs.total_approvals }}"
       
       - name: Enable auto-merge for Dependabot PRs
-        if: ${{ steps.check-approvals.outputs.approvals > 0 }}
+        if: ${{ steps.check-approvals.outputs.total_approvals > 0 }}
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
