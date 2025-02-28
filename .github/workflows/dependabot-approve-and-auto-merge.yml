@@ -15,44 +15,48 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' || github.event_name == 'workflow_dispatch' }}
     steps:
+      - name: Check actor and event
+        run: |
+          echo "Actor: ${{ github.actor }}"
+          echo "Event: ${{ github.event_name }}"
+
       - name: Dependabot metadata
         id: dependabot-metadata
         uses: dependabot/fetch-metadata@v2
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
-      # - name: Check for other approvals
-      #   id: check-approvals
-      #   run: |
-      #     PR_NUMBER=$(echo $PR_URL | awk -F'/' '{print $NF}')
-      #     APPROVALS=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews --jq '.[] | select(.state == "APPROVED") | .user.login' | grep -v dependabot[bot] | wc -l)
-      #     echo "approvals=$APPROVALS" >> $GITHUB_OUTPUT
-      #   env:
-      #     PR_URL: ${{ github.event.pull_request.html_url }}
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check for other approvals
+        id: check-approvals
+        run: |
+          PR_NUMBER=$(echo $PR_URL | awk -F'/' '{print $NF}')
+          APPROVALS=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews --jq '.[] | select(.state == "APPROVED") | .user.login' | grep -v dependabot[bot] | wc -l)
+          echo "approvals=$APPROVALS" >> $GITHUB_OUTPUT
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Check status of all workflows
-      #   id: check-workflows
-      #   run: |
-      #     PR_NUMBER=$(echo $PR_URL | awk -F'/' '{print $NF}')
-      #     WORKFLOW_RUNS=$(gh api repos/${{ github.repository }}/actions/runs --paginate -q ".workflow_runs[] | select(.pull_requests[].number == $PR_NUMBER) | .conclusion")
-      #     for STATUS in $WORKFLOW_RUNS; do
-      #       if [[ "$STATUS" == "failed" ]]; then
-      #         echo "One or more workflows have failed."
-      #         echo "Exiting."
-      #         exit 1
-      #       fi
-      #     done
-      #   env:
-      #     PR_URL: ${{ github.event.pull_request.html_url }}
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check status of all workflows
+        id: check-workflows
+        run: |
+          PR_NUMBER=$(echo $PR_URL | awk -F'/' '{print $NF}')
+          WORKFLOW_RUNS=$(gh api repos/${{ github.repository }}/actions/runs --paginate -q ".workflow_runs[] | select(.pull_requests[].number == $PR_NUMBER) | .conclusion")
+          for STATUS in $WORKFLOW_RUNS; do
+            if [[ "$STATUS" == "failed" ]]; then
+              echo "One or more workflows have failed."
+              echo "Exiting."
+              exit 1
+            fi
+          done
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Debug outputs
-      #   run: |
-      #     echo "Update type: ${{ steps.dependabot-metadata.outputs.update-type }}"
-      #     echo "Approvals: ${{ steps.check-approvals.outputs.approvals }}"
+      - name: Debug outputs
+        run: |
+          echo "Update type: ${{ steps.dependabot-metadata.outputs.update-type }}"
+          echo "Approvals: ${{ steps.check-approvals.outputs.approvals }}"
       
       # - name: Enable auto-merge for Dependabot PRs
       #   if: ${{ steps.check-approvals.outputs.approvals > 0 }}
