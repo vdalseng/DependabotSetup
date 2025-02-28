@@ -1,11 +1,15 @@
 name: Dependabot Pull Request Approve and Merge
 on:
-  pull_request_review:
-    types: [submitted]
+  pull_request_target:
+    types: [opened, synchronize]
+    branches:
+      - dependabot/**
   workflow_run:
     workflows: ["*"]
     types:
       - completed
+  pull_request_review:
+    types: [submitted]
   workflow_dispatch:
 
 permissions:
