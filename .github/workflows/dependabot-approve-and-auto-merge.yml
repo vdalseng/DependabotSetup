@@ -58,9 +58,9 @@ jobs:
           echo "Update type: ${{ steps.dependabot-metadata.outputs.update-type }}"
           echo "Approvals: ${{ steps.check-approvals.outputs.approvals }}"
       
-      # - name: Enable auto-merge for Dependabot PRs
-      #   if: ${{ steps.check-approvals.outputs.approvals > 0 }}
-      #   run: gh pr merge --auto --squash "$PR_URL"
-      #   env:
-      #     PR_URL: ${{ github.event.pull_request.html_url }}
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Enable auto-merge for Dependabot PRs
+        if: ${{ steps.check-approvals.outputs.approvals > 0 }}
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
